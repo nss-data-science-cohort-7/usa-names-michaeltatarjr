@@ -1,27 +1,9 @@
--- SELECT * (toggle w/ ctrl /)
--- FROM names
--- LIMIT 5;
-
--- This is a comment
-
-/*
-SELECT *
-FROM names
-LIMIT 10;
-*/
-
--- use myscript.sql to save
--- open the query tool
--- then use the folder to open the script
-
-
-
 
 
 
 --Exercise Begins Here:
 
--- Save a script containing the query you used to answer each question and your answer (as a comment).
+-- Save a script containing the query you used to answer each question and your answer (as a comment).--
 
 --1. How many rows are in the names table?
 
@@ -47,7 +29,8 @@ LIMIT 10;
 -- ORDER BY MAX(num_registered) DESC;
 
 -- Answer:
--- Linda in 1948 is the top answer
+-- Linda in 1947 is the top answer
+
 
 
 
@@ -58,6 +41,12 @@ LIMIT 10;
 -- Answer
 -- Min=1880 and Max=2018
 
+-- ALTERNATE (YOu could scroll through and look and see if anything was missing perchance...)
+-- SELECT DISTINCT year
+-- FROM names
+-- ORDER BY year;
+
+
 
 
 --5. What year has the largest number of registrations?
@@ -67,7 +56,8 @@ LIMIT 10;
 -- ORDER BY SUM(num_registered) DESC;
 
 -- Answer
--- 1957 had 4200022
+-- 1957 had 4,200,022
+
 
 
 
@@ -80,6 +70,7 @@ LIMIT 10;
 
 
 
+
 --7. Are there more males or more females registered?
 -- SELECT gender, COUNT(gender)
 -- FROM names
@@ -88,6 +79,12 @@ LIMIT 10;
 --Answer
 --There are more females than males
 
+-- SELECT name, SUM(num_registered) AS HowMany
+-- FROM names
+-- WHERE gender = 'F'
+-- GROUP BY name
+-- ORDER BY SUM(num_registered) DESC
+-- LIMIT 1
 
 
 -- 8. What are the most popular male and female names overall (i.e., the most total registrations)?
@@ -117,6 +114,7 @@ LIMIT 10;
 
 
 
+
 -- 10. Which year had the most variety in names (i.e. had the most distinct names)?
 -- SELECT COUNT(DISTINCT(name)), year
 -- FROM names
@@ -125,6 +123,7 @@ LIMIT 10;
 
 -- Answer
 -- 2008
+
 
 
 
@@ -139,6 +138,10 @@ LIMIT 10;
 --Answer
 --Ximena
 
+
+
+
+
 --12. How many distinct names appear that start with a 'Q', but whose second letter is not 'u'?
 
 -- SELECT name
@@ -150,6 +153,9 @@ LIMIT 10;
 --Answer
 --46
 
+
+
+
 -- 13. Which is the more popular spelling between "Stephen" and "Steven"? Use a single query to answer this question.
 
 -- SELECT name, COUNT(name)
@@ -160,6 +166,20 @@ LIMIT 10;
 
 --Answer
 --Stephen is the preferred spelling
+
+-- MH ALternate HAVING
+-- SELECT name, SUM(num_registered)
+-- FROM names
+-- GROUP BY name
+-- HAVING name = 'Stephen' OR name = 'Steven'
+
+-- SELECT name, SUM(num_registered)
+-- FROM names
+-- WHERE name LIKE 'Ste%en'
+-- GROUP by name
+-- ORDER BY SUM(num_registered) DESC;
+
+
 
 -- 14. What percentage of names are "unisex" - that is what percentage of names have been used both for boys and for girls?
 
@@ -176,40 +196,76 @@ LIMIT 10;
 -- FROM names
 -- WHERE gender = 'F';
 
--- (Question. How do I take the first equation, then add the second to the third, then subtract that from the first...)
 -- Answer
 -- (41475+67698)
 --  -(98400)
 -- Equals = 10773, or about 11%
 
+-- WITH NameCounts AS (
+--   SELECT name, COUNT(DISTINCT gender) AS GenderCount
+--   FROM names
+--   GROUP BY name
+-- )
+
+-- SELECT COUNT(*) AS UnisexNamesCount,
+--        (COUNT(*) * 100.0 / (SELECT COUNT(DISTINCT name) FROM NameCounts)) AS PercentageUnisex
+-- FROM NameCounts
+-- WHERE GenderCount = 2;
+
+-- SELECT name, COUNT(DISTINCT gender)
+-- FROM names
+-- GROUP BY name
+-- HAVING COUNT(DISTINCT gender) > 1
+
+
+
 -- 15. How many names have made an appearance in every single year since 1880?
 -- SELECT COUNT(name)
 -- FROM names
--- WHERE num_registered BETWEEN 1880 AND 2018 
--- AND num_registered >1;
+-- GROUP BY name
+-- HAVING count(distinct(year))=139
 
 -- Answer
 -- 1817
 
+-- SELECT name
+-- FROM names
+-- GROUP BY name
+-- HAVING count(distinct(year))=(SELECT(COUNT(DISTINCT(YEAR))) from name);
+-- (THIS CODE DOESN"T WORK>>>REVIEW IN VID)
+
+
 -- 16. How many names have only appeared in one year?
-SELECT name, COUNT(DISTINCT(Year))
-FROM names
-GROUP BY 1, year
-HAVING COUNT(DISTINCT(Year))=1;
+-- SELECT name 
+-- FROM names
+-- GROUP BY name
+-- HAVING COUNT(DISTINCT Year)='1'
 
 -- Answer
 -- 21123
+---( Messed with the code, and now it's wrong...)
+
+
+
 
 -- 17. How many names only appeared in the 1950s?
--- SELECT name, COUNT(DISTINCT name)
--- FROM names
--- GROUP BY name
--- HAVING MIN(Year)=1950 AND MAX(Year)=1959;
+SELECT name, COUNT(DISTINCT name)
+FROM names
+GROUP BY name
+HAVING MIN(Year)<=1950 AND MAX(Year)>=1959;
 
 -- Answer
--- Looks like just 2.
+-- The above didn't work.
 
+-- WITH names_50s AS (
+-- 	SELECT name, MIN(year) AS first_year, MAX(year) AS last_year
+-- 	FROM names
+-- 	GROUP BY 1
+-- 	HAVING MIN(year) >= 1950 AND MAX(year) <= 1959
+-- )
 
+-- SELECT COUNT(*)
+-- FROM names_50s;
 
 -- How many names made their first appearance in the 2010s?
 -- SELECT
