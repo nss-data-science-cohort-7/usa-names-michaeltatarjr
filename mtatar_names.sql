@@ -154,8 +154,8 @@ LIMIT 10;
 
 -- SELECT name, COUNT(name)
 -- FROM names
--- WHERE name LIKE 'Stephen'
--- OR name LIKE 'Steven'
+-- WHERE name = 'Stephen'
+-- OR name = 'Steven'
 -- GROUP BY name;
 
 --Answer
@@ -172,8 +172,46 @@ LIMIT 10;
 -- FROM names
 -- WHERE gender = 'M';
 
-SELECT COUNT(DISTINCT name)
-FROM names
-WHERE gender = 'F';
+-- SELECT COUNT(DISTINCT name)
+-- FROM names
+-- WHERE gender = 'F';
 
 -- (Question. How do I take the first equation, then add the second to the third, then subtract that from the first...)
+-- Answer
+-- (41475+67698)
+--  -(98400)
+-- Equals = 10773, or about 11%
+
+-- 15. How many names have made an appearance in every single year since 1880?
+-- SELECT COUNT(name)
+-- FROM names
+-- WHERE num_registered BETWEEN 1880 AND 2018 
+-- AND num_registered >1;
+
+-- Answer
+-- 1817
+
+-- 16. How many names have only appeared in one year?
+SELECT name, COUNT(DISTINCT(Year))
+FROM names
+GROUP BY 1, year
+HAVING COUNT(DISTINCT(Year))=1;
+
+-- Answer
+-- 21123
+
+-- 17. How many names only appeared in the 1950s?
+-- SELECT name, COUNT(DISTINCT name)
+-- FROM names
+-- GROUP BY name
+-- HAVING MIN(Year)=1950 AND MAX(Year)=1959;
+
+-- Answer
+-- Looks like just 2.
+
+
+
+-- How many names made their first appearance in the 2010s?
+-- SELECT
+-- FROM
+-- WHERE
